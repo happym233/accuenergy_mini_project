@@ -3,12 +3,18 @@ declare interface Position {
   lng: number
 }
 
-declare interface SearchRecord {
-  placeFormalName: string
+declare interface CenterPosition {
   position: Position
-  time: Date
-  timezone: string | null
-  timezoneOffset: number | null
+  zoom: number
+}
+
+declare interface SearchRecord {
+  name?: string
+  address?: string
+  position: Position
+  time: string
+  timezone?: string 
+  timezoneOffset?: number
   checked: boolean
   deleted: boolean
 }

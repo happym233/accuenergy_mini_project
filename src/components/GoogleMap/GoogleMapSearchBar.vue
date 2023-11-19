@@ -2,63 +2,73 @@
 import { onMounted, ref } from 'vue';
 import { googleMapServices } from "@/api/GoogleService"
 import { useSearchMsg } from "@/hooks/useSearchMsg"
-const placeTxt = ref<string>("")
+import { useLoading } from '@/hooks/useLoading';
+import { getCurrentTime } from '@/utils/date'
+import { useMapStore } from '@/stores/modules/map';
+
+const mapStore = useMapStore()
+const { searchMsg, setMsg } = useSearchMsg()
+const { loading, loadingOn, loadingOff } = useLoading()
+const placeStr = ref<string>("")
 const setPlace = (v: any) => {
-    placeTxt.value = v.name
+    placeStr.value = v.name
 }
-const { searchMsg, handleMsgChange } = useSearchMsg()
 const searchPlace = () => {
-    console.log(placeTxt)
-    console.log(googleMapServices)
-    googleMapServices.searchPlace(placeTxt.value).then((data: any) => {
-        console.log(data)
-        handleMsgChange(data)
-        console.log(searchMsg)
-    }).catch((error: any) => {
-        handleMsgChange(error)
+    const autoCompleteEle: any = document.getElementById("autoComplete")
+    placeStr.value = autoCompleteEle.value
+    if (placeStr.value === "") {
+        setMsg("Please provide a place.")
+        return
     }
-    )
+    loadingOn()
+    googleMapServices.searchPlace(placeStr.value).then((data: any) => {
+        const searchRecord: SearchRecord = {
+            name: data.name,
+            address: data.formatted_address,
+            position: {
+                lat: data.geometry.location.lat,
+                lng: data.geometry.location.lng,
+            },
+            time: getCurrentTime(),
+            checked: false,
+            deleted: false
+        }
+        mapStore.addNewRecord(searchRecord)
+        setMsg("")
+    }).catch((error: any) => {
+        setMsg(error.message)
+    }).finally(() => {
+        loadingOff()
+    })
 }
 
 </script>
 
 <template>
-    <span>{{ searchMsg }} </span>
+    <span class="danger">{{ searchMsg }} </span>
     <div class="form-group has-search needs-validation">
         <span class="form-control-feedback">
             <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
         </span>
-        <GMapAutocomplete placeholder="input place here..." class="form-control" @place_changed="setPlace"
-            v-on:keyup.enter.prevent="searchPlace" required />
+        <GMapAutocomplete v-if="!loading" id="autoComplete" placeholder="input place here..." class="form-control"
+            @place_changed="setPlace" v-on:keyup.enter.prevent="searchPlace" required />
 
-        <GMapAutocomplete placeholder="input place here..." class="form-control" @place_changed="setPlace"
-            v-on:keyup.enter.prevent="searchPlace" disabled />
-        <button type="submit" class="btn btn-outline-secondary" @click.prevent="searchPlace"
-            style="width: 80%; height: 30px;">Search Place</button>
-        <button type="button" class="btn btn-outline-secondary" @click="searchPlace" style="width: 80%; height: 30px;"
-            disabled>
-
-            <div class="invalid-feedback">
-                Please provide a valid place.
-            </div>
-
-            <div class="spinner-border" style="width: 20px;height: 20px;" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </button>
-
-        <button type="button" class="btn btn-outline-secondary  btn-sm" @click="searchPlace"
-            style="width: 20%; height: 30px;">locate me</button>
-        <button type="button" class="btn btn-outline-secondary  btn-sm" @click="searchPlace"
-            style="width: 20%; height: 30px;" disabled>
-            <div class="spinner-border" style="width: 20px;height: 20px;" role="status">
+        <GMapAutocomplete v-else placeholder="input place here..." class="form-control" disabled />
+        <button v-if="!loading" type="submit" class="btn btn-outline-secondary searchButton"
+            @click.prevent="searchPlace">Search Place</button>
+        <button v-else type="button" class="btn btn-outline-secondary searchButton" @click="searchPlace" disabled>
+            <div class="spinner-border spinnerInside" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         </button>
     </div>
 </template>
 
-<style scoped> .has-search .form-control {
+<style scoped> .danger {
+     color: rgb(220, 53, 69);
+ }
+
+ .has-search .form-control {
      padding-left: 2.375rem;
  }
 
@@ -78,5 +88,15 @@ const searchPlace = () => {
      width: 100%;
      z-index: 100;
      background-color: aqua;
+ }
+
+ .searchButton {
+     width: 80%;
+     height: 30px;
+ }
+
+ .spinnerInside {
+     width: 20px;
+     height: 20px;
  }
 </style>
