@@ -13,8 +13,21 @@ declare interface SearchRecord {
   address?: string
   position: Position
   time: string
-  timezone?: string 
+  timezone?: string
   timezoneOffset?: number
   checked: boolean
   deleted: boolean
+}
+
+declare interface PagedRecords {
+  currentPage: number
+  totalPages: number
+  pageSize: number
+  records: SearchRecord[]
+}
+
+declare interface PageRequest { 
+  currentPage: number
+  totalPages: number
+  pageSize:number
 }

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { googleMapServices } from "@/api/GoogleService"
-import { useSearchMsg } from "@/hooks/useSearchMsg"
+import { useMsg } from "@/hooks/useMsg.js"
 import { useLoading } from '@/hooks/useLoading';
 import { getCurrentTime } from '@/utils/date'
 import { useMapStore } from '@/stores/modules/map';
 
 const mapStore = useMapStore()
-const { searchMsg, setMsg } = useSearchMsg()
+const { msg, setMsg } = useMsg()
 const { loading, loadingOn, loadingOff } = useLoading()
 const placeStr = ref<string>("")
 const setPlace = (v: any) => {
@@ -21,7 +21,8 @@ const searchPlace = () => {
         return
     }
     loadingOn()
-    googleMapServices.searchPlace(placeStr.value).then((data: any) => {
+    googleMapServices.searchPlace(placeStr.value).then((resData: any) => {
+        const data = resData.candidates[0]
         const searchRecord: SearchRecord = {
             name: data.name,
             address: data.formatted_address,
@@ -45,7 +46,7 @@ const searchPlace = () => {
 </script>
 
 <template>
-    <span class="danger">{{ searchMsg }} </span>
+    <span class="danger">{{ msg }} </span>
     <div class="form-group has-search needs-validation">
         <span class="form-control-feedback">
             <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
@@ -91,7 +92,7 @@ const searchPlace = () => {
  }
 
  .searchButton {
-     width: 80%;
+     width: 100%;
      height: 30px;
  }
 
@@ -99,4 +100,4 @@ const searchPlace = () => {
      width: 20px;
      height: 20px;
  }
-</style>
+</style>@/hooks/useMsg

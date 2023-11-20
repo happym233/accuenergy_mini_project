@@ -30,8 +30,8 @@ const zoomout = () => {
 
 
         <div class="gmap-control-button">
-            <button class="btn btn-light" @click="zoomin"> +</button>
-            <button class="btn btn-light" @click="zoomout"> - </button>
+            <button class="btn btn-light" @click="zoomout">-</button>
+            <button class="btn btn-light" @click="zoomin">+</button>
         </div>
         </GMapMap>
 
@@ -50,7 +50,7 @@ const zoomout = () => {
  }
 
  .gmap-control-button {
-    bottom: 30px;
+    bottom: 15px;
     right: 20%;
     position: absolute;
  }

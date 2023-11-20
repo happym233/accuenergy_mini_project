@@ -8,9 +8,8 @@ const geolocate = () => {
     loadingOn()
     navigator.geolocation.getCurrentPosition((position) => {
         mapStore.setCenter(position.coords.latitude,  position.coords.longitude)
-        mapStore.setZoom(14)
+        mapStore.setZoom(16)
         loadingOff()
-        console.log(mapStore.center.zoom)
     });
 }
 
