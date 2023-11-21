@@ -21,7 +21,7 @@ const searchPlace = () => {
         return
     }
     loadingOn()
-    googleMapServices.searchPlace(placeStr.value).then((resData: any) => {
+        googleMapServices.searchPlace(placeStr.value).then((resData: any) => {
         const data = resData.candidates[0]
         const searchRecord: SearchRecord = {
             name: data.name,
@@ -41,31 +41,49 @@ const searchPlace = () => {
     }).finally(() => {
         loadingOff()
     })
-}
+    }
 
 </script>
 
 <template>
     <span class="danger">{{ msg }} </span>
-    <div class="form-group has-search needs-validation">
-        <span class="form-control-feedback">
-            <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
-        </span>
-        <GMapAutocomplete v-if="!loading" id="autoComplete" placeholder="input place here..." class="form-control"
-            @place_changed="setPlace" v-on:keyup.enter.prevent="searchPlace" required />
+    <div class="form-group has-search">
+        <div class="search-bar-container">
+            <span class="form-control-feedback">
+                <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
+            </span>
+            <GMapAutocomplete v-if="!loading" id="autoComplete" placeholder="input place here..." class="form-control"
+                @place_changed="setPlace" v-on:keyup.enter.prevent="searchPlace" required />
 
-        <GMapAutocomplete v-else placeholder="input place here..." class="form-control" disabled />
-        <button v-if="!loading" type="submit" class="btn btn-outline-secondary searchButton"
-            @click.prevent="searchPlace">Search Place</button>
-        <button v-else type="button" class="btn btn-outline-secondary searchButton" @click="searchPlace" disabled>
-            <div class="spinner-border spinnerInside" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </button>
+            <GMapAutocomplete v-else placeholder="input place here..." class="form-control" disabled />
+        </div>
+        <div class="search-btn-container">
+            <button v-if="!loading" type="submit" class="btn btn-outline-secondary search-button"
+                @click.prevent="searchPlace">Search Place</button>
+            <button v-else type="button" class="btn btn-outline-secondary search-button" @click="searchPlace" disabled>
+                <div class="spinner-border spinner-inside" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </button>
+        </div>
     </div>
 </template>
 
-<style scoped> .danger {
+<style scoped> .has-search {
+     font-size: 20px;
+ }
+
+ .search-bar-container {
+     width: 100%;
+     margin: 20px 10px 10px 0px;
+ }
+
+ .search-btn-container {
+     width: 85%;
+     margin: 10px auto;
+ }
+
+ .danger {
      color: rgb(220, 53, 69);
  }
 
@@ -85,19 +103,15 @@ const searchPlace = () => {
      color: #aaa;
  }
 
- .has-search .recommend {
-     width: 100%;
-     z-index: 100;
-     background-color: aqua;
- }
 
- .searchButton {
+ .search-button {
      width: 100%;
      height: 30px;
  }
 
- .spinnerInside {
+ .spinner-inside {
+    align-items: center;
      width: 20px;
      height: 20px;
  }
-</style>@/hooks/useMsg
+</style>

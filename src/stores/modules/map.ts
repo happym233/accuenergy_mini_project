@@ -45,6 +45,7 @@ export const useMapStore = defineStore('map', () => {
   const getMarkers = () => {
     const res: Position[] = []
     records.value.forEach((record) => {
+      //remove duplicated markers
       if (
         !record.deleted &&
         !res.find((e) => e.lat === record.position.lat && e.lng === record.position.lng)
@@ -55,15 +56,6 @@ export const useMapStore = defineStore('map', () => {
         })
       }
     })
-    if (
-      center.zoom != 7 &&
-      !res.find((e) => e.lat === center.position.lat && e.lng === center.position.lng)
-    ) {
-      res.push({
-        lat: center.position.lat,
-        lng: center.position.lng
-      })
-    }
     return res
   }
 

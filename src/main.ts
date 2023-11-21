@@ -1,6 +1,4 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import router from './router'
 import store from './stores'
 import App from './App.vue'
 import VueGoogleMaps from '@fawmi/vue-google-maps'
@@ -19,12 +17,10 @@ const app = createApp(App)
 app.use(VueGoogleMaps, {
   load: {
     key: process.env.VUE_APP_GOOGLE_MAP_API_KEY,
-    v: '3.51',
     language: 'en',
     libraries: 'places'
   }
 })
 app.use(store)
-app.use(router)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.mount('#app')
