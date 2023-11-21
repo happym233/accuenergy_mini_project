@@ -3,6 +3,7 @@ import { googleMapServices } from '@/api/GoogleService';
 import { useLoading } from '@/hooks/useLoading';
 import { useMapStore } from '@/stores/modules/map';
 import { onBeforeUnmount, ref, watch } from 'vue';
+import { getTimezoneTime } from '@/utils/date';
 
 interface TimeZoneData {
     dstOffset: number
@@ -19,11 +20,11 @@ const dateStr = ref<string>("")
 const interval = ref<any>()
 
 const getTimezone = () => {
-    loadingOn()
     if (mapStore.latestRecord === null) return
+    loadingOn()
+    clearClock()
     googleMapServices.searchTimeZone(mapStore.latestRecord.position).then((data: any) => {
         timezoneData.value = data as TimeZoneData
-        clearClock()
         startClock()
     }).finally(() => {
         loadingOff()
@@ -78,3 +79,4 @@ onBeforeUnmount(clearClock)
      font-weight: 800;
  }
 </style>
+
