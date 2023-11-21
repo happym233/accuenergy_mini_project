@@ -68,13 +68,13 @@ onBeforeUnmount(clearClock)
 
 <style scoped> .date {
      margin-top: 20px;
-     font-family: 'Orbitron', sans-serif;
+     font-family: sans-serif;
      font-size: 20px;
      font-weight: 600;
  }
 
  .time {
-     font-family: 'Orbitron', sans-serif;
+     font-family: sans-serif;
      font-size: 40px;
      font-weight: 800;
  }
